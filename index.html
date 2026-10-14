@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yams — Compteur de points</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --bg-2: #ece7dc;
+    --card: #ffffff;
+    --ink: #2b2a33;
+    --ink-soft: #6b6a75;
+    --line: #e3ded3;
+    --primary: #3a5bd9;
+    --primary-dark: #2c48b0;
+    --accent: #f2b544;
+    --accent-soft: #fdf3dd;
+    --danger: #d94b4b;
+    --success: #2f9e6e;
+    --radius: 14px;
+    --shadow: 0 6px 24px rgba(40, 38, 50, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 100%);
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 44px;
+    letter-spacing: 6px;
+    margin: 8px 0 2px;
+    color: var(--primary-dark);
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+
+  .manches-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  select, input[type="text"], .name-input {
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 10px;
+    background: var(--card);
+    color: var(--ink);
+  }
+  select:focus, .name-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+  .btn {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .05s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:hover { box-shadow: var(--shadow); }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .btn.primary:hover { background: var(--primary-dark); }
+  .btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+  .table-wrap {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+    padding: 6px;
+  }
+
+  .score-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 640px;
+    table-layout: fixed;
+  }
+
+  .score-table th, .score-table td {
+    border: 1px solid var(--line);
+    padding: 2px 4px;
+    text-align: center;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .score-table td.num-cell { padding: 0 4px; }
+
+  .score-table thead th {
+    background: #faf8f3;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+  }
+
+  .score-table .corner {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: #faf8f3;
+    width: 160px;
+  }
+
+  .row-label {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    text-align: left !important;
+    background: #faf8f3;
+    font-weight: 700;
+    color: var(--ink-soft);
+    width: 160px;
+    padding-left: 16px !important;
+  }
+  .row-label.combo { color: var(--ink); font-weight: 600; }
+
+  .player-head { padding: 8px 6px !important; }
+  .player-head-inner {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+  }
+  .name-input { flex: 1 1 auto; min-width: 0; max-width: 130px; text-align: center; font-weight: 700; }
+
+  .rm-btn {
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 22px; height: 22px;
+  }
+  .rm-btn:hover { background: #f0ece2; color: var(--danger); }
+
+  .manche-head { font-weight: 600; color: var(--ink-soft); background: #f4f1ea !important; }
+  .manche-top { font-weight: 800; color: var(--primary-dark); background: #eef1fc !important; letter-spacing: 1px; }
+
+  .score-cell { font-weight: 600; }
+
+  .total-row td, .total-row th { background: #f7f4ec; font-weight: 800; color: #5c5a55; }
+
+  .total-cell { font-variant-numeric: tabular-nums; }
+  .final-row td, .final-row th { background: var(--accent-soft); font-weight: 800; color: #a06b00; }
+  .final-cell { font-variant-numeric: tabular-nums; }
+
+  /* Saisie inline */
+  .cell-inner { display: flex; flex-direction: column; align-items: center; }
+  .cell-input {
+    width: 46px; text-align: center; font-size: 14px; font-weight: 600;
+    border: 1px solid var(--line); border-radius: 7px; padding: 0;
+    background: #fff; color: var(--ink); line-height: 1.4;
+  }
+  .cell-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+  .cell-input::-webkit-outer-spin-button, .cell-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .cell-input[type=number] { -moz-appearance: textfield; }
+  .pair-inputs { display: flex; gap: 3px; }
+  .pair-inputs .cell-input { width: 22px; }
+  .cell-value {
+    -webkit-appearance: none; appearance: none;
+    border: none; background: transparent; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--primary-dark);
+    width: 100%; padding: 0; margin: 0; line-height: 1; height: auto; min-height: 0; border-radius: 8px;
+  }
+  .cell-value:hover { background: var(--accent-soft); }
+  .cell-value.empty { color: #c6c2b6; }
+  .suite-btn {
+    -webkit-appearance: none; appearance: none;
+    border: 1px solid var(--line); background: #fff; color: var(--ink-soft);
+    font-weight: 800; font-size: 14px; border-radius: 8px; padding: 16px 12px; margin: 0; line-height: 1; cursor: pointer;
+  }
+  .suite-btn:hover { background: var(--accent-soft); }
+  .suite-btn.filled { background: #eef1fc; color: var(--primary-dark); border-color: var(--primary); }
+
+  /* Historique */
+  .page-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .page-head h2 { margin: 0; font-size: 22px; color: var(--primary-dark); }
+  .empty { text-align: center; color: var(--ink-soft); padding: 40px 0; }
+
+  .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .history-list li {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .history-link { color: var(--primary); font-weight: 700; font-size: 16px; text-decoration: none; cursor: pointer; }
+  .history-link:hover { text-decoration: underline; }
+  .history-players { color: var(--ink-soft); font-size: 14px; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: #fff;
+    padding: 11px 20px; border-radius: 10px;
+    font-size: 14px; opacity: 0; transition: all .3s ease;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+const STORAGE_CURRENT = 'yams.current';
+const STORAGE_HISTORY = 'yams.history';
+
+const FACE = { as:1, deux:2, trois:3, quatre:4, cinq:5, six:6 };
+const MULT = { brelan:3, carre:4, yam:5 };
+const SUITE_POINTS = { grandeSuite:20, petiteSuite:15 };
+
+const INPUT_SPEC = {
+  as: { kind:'count' }, deux: { kind:'count' }, trois: { kind:'count' },
+  quatre: { kind:'count' }, cinq: { kind:'count' }, six: { kind:'count' },
+  brelan: { kind:'value' }, carre: { kind:'value' }, yam: { kind:'value' },
+  full: { kind:'pair' }, doublePaire: { kind:'pair' },
+  plus: { kind:'total' }, moins: { kind:'total' },
+  grandeSuite: { kind:'suite', points:20 }, petiteSuite: { kind:'suite', points:15 },
+};
+
+const SECTIONS = {
+  1: ['as','deux','trois','quatre','cinq','six'],
+  2: ['brelan','full','carre','doublePaire'],
+  3: ['plus','moins'],
+  4: ['grandeSuite','petiteSuite','yam']
+};
+
+const ROWS = [
+  {type:'combo', id:'as', label:'AS'},
+  {type:'combo', id:'deux', label:'DEUX'},
+  {type:'combo', id:'trois', label:'TROIS'},
+  {type:'combo', id:'quatre', label:'QUATRE'},
+  {type:'combo', id:'cinq', label:'CINQ'},
+  {type:'combo', id:'six', label:'SIX'},
+  {type:'total', section:1, label:'TOTAL'},
+  {type:'combo', id:'brelan', label:'BRELAN'},
+  {type:'combo', id:'full', label:'FULL'},
+  {type:'combo', id:'carre', label:'CARRE'},
+  {type:'combo', id:'doublePaire', label:'DOUBLE PAIRE'},
+  {type:'total', section:2, label:'TOTAL'},
+  {type:'combo', id:'plus', label:'LE PLUS'},
+  {type:'combo', id:'moins', label:'LE MOINS'},
+  {type:'total', section:3, label:'TOTAL'},
+  {type:'combo', id:'grandeSuite', label:'GRANDE SUITE'},
+  {type:'combo', id:'petiteSuite', label:'PETITE SUITE'},
+  {type:'combo', id:'yam', label:'YAM'},
+  {type:'total', section:4, label:'TOTAL'}
+];
+
+const app = document.getElementById('app');
+let state;
+
+/* ---------- État / stockage ---------- */
+function defaultState() {
+  return { manches: 3, nextId: 1, players: [{ id: 1, name: '' }], scores: {} };
+}
+
+function loadCurrent() {
+  try {
+    const raw = localStorage.getItem(STORAGE_CURRENT);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && Array.isArray(s.players)) { state = s; return; }
+    }
+  } catch (e) {}
+  state = defaultState();
+}
+
+function saveCurrent() {
+  try { localStorage.setItem(STORAGE_CURRENT, JSON.stringify(state)); } catch (e) {}
+}
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_HISTORY)) || []; }
+  catch (e) { return []; }
+}
+
+function saveHistory(h) {
+  try { localStorage.setItem(STORAGE_HISTORY, JSON.stringify(h)); } catch (e) {}
+}
+
+/* ---------- Scores ---------- */
+function getScore(st, pid, manche, comboId) {
+  return (st.scores && st.scores[pid] && st.scores[pid][manche] && st.scores[pid][manche][comboId] != null)
+    ? st.scores[pid][manche][comboId] : null;
+}
+
+function setScore(pid, manche, comboId, value) {
+  if (!state.scores[pid]) state.scores[pid] = {};
+  if (!state.scores[pid][manche]) state.scores[pid][manche] = {};
+  state.scores[pid][manche][comboId] = value;
+}
+
+function sectionTotal(st, pid, manche, section) {
+  if (section === 3) {
+    const plus = computeScore('plus', getScore(st, pid, manche, 'plus'));
+    const moins = computeScore('moins', getScore(st, pid, manche, 'moins'));
+    return (plus == null ? 0 : plus) - (moins == null ? 0 : moins);
+  }
+  let t = 0;
+  for (const c of SECTIONS[section]) {
+    const v = computeScore(c, getScore(st, pid, manche, c));
+    if (v != null) t += v;
+  }
+  return t;
+}
+
+function mancheTotal(st, pid, manche) {
+  return sectionTotal(st, pid, manche, 1) + sectionTotal(st, pid, manche, 2)
+       + sectionTotal(st, pid, manche, 3) + sectionTotal(st, pid, manche, 4);
+}
+
+function playerGrandTotal(st, pid) {
+  let t = 0;
+  for (let m = 0; m < st.manches; m++) t += mancheTotal(st, pid, m);
+  return t;
+}
+
+function computeScore(id, raw) {
+  if (raw == null) return null;
+  if (FACE[id] != null) return raw * FACE[id];
+  if (MULT[id] != null) return raw * MULT[id];
+  if (id === 'full') return 3 * raw[0] + 2 * raw[1];
+  if (id === 'doublePaire') return 2 * raw[0] + 2 * raw[1];
+  if (id === 'plus' || id === 'moins') return raw;
+  if (SUITE_POINTS[id] != null) return SUITE_POINTS[id];
+  return null;
+}
+
+function sanitizeRaw(spec, raw) {
+  if (raw == null) return null;
+  const int = v => Math.round(v);
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  if (spec.kind === 'pair') return [clamp(int(raw[0]), 1, 6), clamp(int(raw[1]), 1, 6)];
+  const v = int(raw);
+  if (spec.kind === 'count') return clamp(v, 0, 5);
+  if (spec.kind === 'value') return clamp(v, 1, 6);
+  return clamp(v, 0, Infinity);
+}
+
+/* ---------- Utilitaires ---------- */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+  ));
+}
+
+function formatDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' })
+      + ' à ' + d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+  } catch (e) { return iso; }
+}
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 350); }, 2200);
+}
+
+/* ---------- Rendu ---------- */
+function tableHTML(st, readOnly) {
+  const players = st.players;
+  const manches = st.manches;
+  const totalCols = players.length * manches + 1;
+  let html = `<div class="table-wrap"><table class="score-table" style="min-width:${160 + totalCols * 54}px">`;
+  html += '<thead><tr><th class="corner"></th>';
+  for (let m = 0; m < manches; m++) {
+    html += `<th class="manche-top" colspan="${players.length}">Manche ${m + 1}</th>`;
+  }
+  html += '</tr><tr><th class="corner"></th>';
+  for (let m = 0; m < manches; m++) {
+    for (const p of players) {
+      if (readOnly) {
+        html += `<th class="player-head">${esc(p.name || '—')}</th>`;
+      } else {
+        const rm = m === 0 ? `<button class="rm-btn" data-remove="${p.id}" title="Supprimer ce joueur">×</button>` : '';
+        html += `<th class="player-head"><div class="player-head-inner">`
+          + `<input class="name-input" data-name="${p.id}" value="${esc(p.name)}" placeholder="Prénom" autocomplete="off">${rm}`
+          + `</div></th>`;
+      }
+    }
+  }
+  html += '</tr></thead><tbody>';
+
+  for (const row of ROWS) {
+    if (row.type === 'combo') {
+      html += `<tr><th class="row-label combo">${row.label}</th>`;
+      for (let m = 0; m < manches; m++) {
+        for (const p of players) {
+          const raw = getScore(st, p.id, m, row.id);
+          const score = computeScore(row.id, raw);
+          const spec = INPUT_SPEC[row.id];
+          if (readOnly) {
+            html += `<td class="score-cell${raw == null ? ' empty' : ''}">${raw == null ? '' : score}</td>`;
+          } else if (spec.kind === 'suite') {
+            html += `<td class="score-cell"><div class="cell-inner">`
+              + `<button type="button" class="suite-btn${raw == null ? '' : ' filled'}" data-suite="${row.id}" data-player="${p.id}" data-manche="${m}">${spec.points}</button>`
+              + `</div></td>`;
+          } else {
+            html += `<td class="score-cell num-cell"><div class="cell-inner">${cellValueHTML(row.id, p.id, m, raw)}</div></td>`;
+          }
+        }
+      }
+      html += '</tr>';
+    } else if (row.type === 'total') {
+      html += `<tr class="total-row"><th class="row-label">${row.label}</th>`;
+      for (let m = 0; m < manches; m++) {
+        for (const p of players) {
+          html += `<td class="total-cell" data-tp="${p.id}" data-tm="${m}" data-ts="${row.section}">${sectionTotal(st, p.id, m, row.section)}</td>`;
+        }
+      }
+      html += '</tr>';
+    }
+  }
+  html += '<tr class="final-row"><th class="row-label">TOTAL FINAL</th>';
+  for (let m = 0; m < manches; m++) {
+    for (const p of players) {
+      html += `<td class="final-cell" data-final-player="${p.id}" data-final-manche="${m}">${mancheTotal(st, p.id, m)}</td>`;
+    }
+  }
+  html += '</tr>';
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function mancheOptions() {
+  let o = '';
+  for (let n = 2; n <= 10; n++) {
+    o += `<option value="${n}" ${n === state.manches ? 'selected' : ''}>${n}</option>`;
+  }
+  return o;
+}
+
+function renderMain() {
+  app.innerHTML = `
+    <h1>YAMS</h1>
+    <p class="subtitle">Compteur de points</p>
+    <div class="toolbar">
+      <label class="manches-label">Manches
+        <select data-manches>${mancheOptions()}</select>
+      </label>
+      <button id="add-player" class="btn primary">+ Ajouter un joueur</button>
+      <button id="save-game" class="btn">Sauvegarder la partie</button>
+      <button id="open-history" class="btn">Parties sauvegardées</button>
+      <button id="new-game" class="btn danger">Nouvelle partie</button>
+    </div>
+    ${tableHTML(state, false)}
+  `;
+}
+
+function renderHistory() {
+  const h = loadHistory().slice().sort((a, b) => b.date.localeCompare(a.date));
+  let html = `<div class="page-head"><button id="back-main" class="btn">← Retour</button><h2>Parties sauvegardées</h2></div>`;
+  if (h.length === 0) {
+    html += '<p class="empty">Aucune partie sauvegardée pour le moment.</p>';
+  } else {
+    html += '<ul class="history-list">';
+    for (const item of h) {
+      const names = item.players.map(p => p.name || '—').join(', ');
+      html += `<li>`
+        + `<a class="history-link" data-view-history="${item.id}">${formatDate(item.date)}</a>`
+        + `<span class="history-players">${esc(names)}</span>`
+        + `<button class="rm-btn" data-del-history="${item.id}" title="Supprimer">×</button>`
+        + `</li>`;
+    }
+    html += '</ul>';
+  }
+  app.innerHTML = html;
+}
+
+function renderHistoryDetail(id) {
+  const item = loadHistory().find(x => x.id === id);
+  if (!item) { renderHistory(); return; }
+  const st = { players: item.players, manches: item.manches, scores: item.scores };
+  app.innerHTML = `<div class="page-head">`
+    + `<button id="back-history" class="btn">← Retour</button>`
+    + `<h2>Partie du ${formatDate(item.date)}</h2>`
+    + `</div>` + tableHTML(st, true);
+}
+
+/* ---------- Saisie inline ---------- */
+function cellInputsHTML(spec, comboId, pid, manche, raw) {
+  if (spec.kind === 'pair') {
+    const a = raw ? raw[0] : '';
+    const b = raw ? raw[1] : '';
+    return `<span class="pair-inputs">`
+      + `<input type="number" class="cell-input pair-a" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" data-index="0" value="${a}" min="1" max="6">`
+      + `<input type="number" class="cell-input pair-b" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" data-index="1" value="${b}" min="1" max="6">`
+      + `</span>`;
+  }
+  const ph = spec.kind === 'count' ? 'nb' : (spec.kind === 'value' ? 'val' : 'total');
+  const mn = spec.kind === 'count' ? 0 : (spec.kind === 'value' ? 1 : 0);
+  const mx = spec.kind === 'count' ? 5 : (spec.kind === 'value' ? 6 : 99);
+  return `<input type="number" class="cell-input" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" value="${raw == null ? '' : raw}" min="${mn}" max="${mx}" placeholder="${ph}">`;
+}
+
+function cellValueHTML(comboId, pid, manche, raw) {
+  const score = computeScore(comboId, raw);
+  return `<button type="button" class="cell-value${raw == null ? ' empty' : ''}" data-edit-combo="${comboId}" data-player="${pid}" data-manche="${manche}">${raw == null ? '·' : score}</button>`;
+}
+
+function commitCell(cell) {
+  const input = cell.querySelector('.cell-input');
+  if (!input) return;
+  const comboId = input.dataset.combo;
+  const pid = +input.dataset.player;
+  const manche = +input.dataset.manche;
+  const spec = INPUT_SPEC[comboId];
+  let raw;
+  if (spec.kind === 'pair') {
+    const a = cell.querySelector('.pair-a').value;
+    const b = cell.querySelector('.pair-b').value;
+    raw = (a === '' && b === '') ? null : [a === '' ? 0 : +a, b === '' ? 0 : +b];
+  } else {
+    raw = input.value === '' ? null : +input.value;
+  }
+  raw = sanitizeRaw(spec, raw);
+  setScore(pid, manche, comboId, raw);
+  saveCurrent();
+  cell.querySelector('.cell-inner').innerHTML = cellValueHTML(comboId, pid, manche, raw);
+  refreshTotals(pid, manche);
+}
+
+function refreshTotals(pid, manche) {
+  document.querySelectorAll(`[data-tp="${pid}"][data-tm="${manche}"]`).forEach(td => {
+    td.textContent = sectionTotal(state, pid, manche, +td.dataset.ts);
+  });
+  document.querySelectorAll(`[data-final-player="${pid}"][data-final-manche="${manche}"]`).forEach(td => {
+    td.textContent = mancheTotal(state, pid, manche);
+  });
+}
+
+function openCellEditor(btn) {
+  const pid = +btn.dataset.player;
+  const manche = +btn.dataset.manche;
+  const comboId = btn.dataset.editCombo;
+  const spec = INPUT_SPEC[comboId];
+  const raw = getScore(state, pid, manche, comboId);
+  const inner = btn.closest('.cell-inner');
+  inner.innerHTML = cellInputsHTML(spec, comboId, pid, manche, raw);
+  const first = inner.querySelector('.cell-input');
+  if (first) first.focus();
+}
+
+/* ---------- Actions ---------- */
+function addPlayer() {
+  state.players.push({ id: state.nextId++, name: '' });
+  saveCurrent();
+  renderMain();
+}
+
+function removePlayer(pid) {
+  const p = state.players.find(x => x.id === pid);
+  if (!p) return;
+  if (!confirm(`Supprimer le joueur « ${p.name || 'sans nom'} » et ses scores ?`)) return;
+  state.players = state.players.filter(x => x.id !== pid);
+  delete state.scores[pid];
+  saveCurrent();
+  renderMain();
+}
+
+function setManches(n) {
+  if (n === state.manches) return;
+  if (n < state.manches) {
+    let has = false;
+    outer:
+    for (const p of state.players) {
+      for (let m = n; m < state.manches; m++) {
+        const sc = state.scores[p.id] && state.scores[p.id][m];
+        if (sc && Object.values(sc).some(v => v != null)) { has = true; break outer; }
+      }
+    }
+    if (has && !confirm('Certaines manches contiennent déjà des scores. Les réduire les supprimera. Continuer ?')) return;
+    for (const p of state.players) {
+      if (state.scores[p.id]) {
+        for (let m = n; m < state.manches; m++) delete state.scores[p.id][m];
+      }
+    }
+  }
+  state.manches = n;
+  saveCurrent();
+  renderMain();
+}
+
+function newGame() {
+  if (!confirm('Commencer une nouvelle partie ? Les scores actuels seront effacés.')) return;
+  state = defaultState();
+  saveCurrent();
+  renderMain();
+}
+
+function saveGameToHistory() {
+  const h = loadHistory();
+  h.push({
+    id: Date.now(),
+    date: new Date().toISOString(),
+    players: state.players.map(p => ({ id: p.id, name: p.name })),
+    manches: state.manches,
+    scores: JSON.parse(JSON.stringify(state.scores))
+  });
+  saveHistory(h);
+  toast('Partie sauvegardée !');
+}
+
+function deleteHistory(id) {
+  if (!confirm('Supprimer cette partie sauvegardée ?')) return;
+  saveHistory(loadHistory().filter(x => x.id !== id));
+  renderHistory();
+}
+
+/* ---------- Écouteurs globaux ---------- */
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest('#add-player')) { addPlayer(); return; }
+  if (t.closest('#save-game')) { saveGameToHistory(); return; }
+  if (t.closest('#open-history')) { renderHistory(); return; }
+  if (t.closest('#new-game')) { newGame(); return; }
+  if (t.closest('#back-main')) { renderMain(); return; }
+  if (t.closest('#back-history')) { renderHistory(); return; }
+  const rm = t.closest('[data-remove]');
+  if (rm) { removePlayer(+rm.dataset.remove); return; }
+  const del = t.closest('[data-del-history]');
+  if (del) { deleteHistory(+del.dataset.delHistory); return; }
+  const view = t.closest('[data-view-history]');
+  if (view) { renderHistoryDetail(+view.dataset.viewHistory); return; }
+  const suite = t.closest('[data-suite]');
+  if (suite) {
+    const comboId = suite.dataset.suite;
+    const pid = +suite.dataset.player;
+    const manche = +suite.dataset.manche;
+    setScore(pid, manche, comboId, getScore(state, pid, manche, comboId) == null ? SUITE_POINTS[comboId] : null);
+    saveCurrent();
+    renderMain();
+    return;
+  }
+  const editBtn = t.closest('[data-edit-combo]');
+  if (editBtn) { openCellEditor(editBtn); return; }
+});
+
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.matches('[data-name]')) {
+    const p = state.players.find(x => x.id === +t.dataset.name);
+    if (p) {
+      p.name = t.value;
+      saveCurrent();
+      document.querySelectorAll(`[data-name="${p.id}"]`).forEach(inp => { if (inp !== t) inp.value = t.value; });
+    }
+  }
+  if (t.matches('[data-manches]')) {
+    setManches(+t.value);
+  }
+});
+
+document.addEventListener('focusout', e => {
+  const t = e.target;
+  if (t.matches('.cell-input')) {
+    const cell = t.closest('td');
+    if (!cell.contains(e.relatedTarget)) commitCell(cell);
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('.cell-input')) {
+    e.preventDefault();
+    commitCell(e.target.closest('td'));
+  }
+});
+
+/* ---------- Démarrage ---------- */
+loadCurrent();
+renderMain();
+</script>
+</body>
+</html>
