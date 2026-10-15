@@ -33,7 +33,7 @@
   }
 
   .app {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 24px 20px 60px;
   }
@@ -100,6 +100,8 @@
   .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
   .btn.primary:hover { background: var(--primary-dark); }
   .btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .btn.violet { background: #8e44ad; border-color: #8e44ad; color: #fff; }
+  .btn.violet:hover { background: #75388f; }
 
   .table-wrap {
     background: var(--card);
@@ -153,6 +155,7 @@
     padding-left: 16px !important;
   }
   .row-label.combo { color: var(--ink); font-weight: 600; }
+  .label-bonus { font-size: 10px; font-weight: 600; color: #a06b00; }
 
   .player-head { padding: 8px 6px !important; }
   .player-head-inner {
@@ -174,50 +177,67 @@
     width: 22px; height: 22px;
   }
   .rm-btn:hover { background: #f0ece2; color: var(--danger); }
+  .rm-btn-spacer { width: 22px; height: 22px; flex: 0 0 22px; }
+
+  .rayer-case-btn {
+    border: 1px solid var(--line); background: transparent; color: var(--ink-soft);
+    font-size: 13px; font-weight: 700; border-radius: 7px; padding: 5px 12px; cursor: pointer; line-height: 1; margin-top: 4px;
+  }
+  .rayer-case-btn:hover { background: #f0ece2; }
+  .suite-action {
+    -webkit-appearance: none; appearance: none;
+    border: 1px solid var(--line); background: #eef1fc; color: var(--primary-dark);
+    font-family: inherit; font-weight: 700; font-size: 13px; border-radius: 7px; padding: 5px 12px; cursor: pointer; margin: 2px 0;
+  }
+  .suite-action:hover { background: #e2e9f8; }
+  .cell-value.raye { color: var(--ink-soft); font-weight: 800; }
+  .score-cell.raye { color: var(--ink-soft); }
 
   .manche-head { font-weight: 600; color: var(--ink-soft); background: #f4f1ea !important; }
-  .manche-top { font-weight: 800; color: var(--primary-dark); background: #eef1fc !important; letter-spacing: 1px; }
+  .manche-top { font-weight: 800; background: #f4f1ea !important; letter-spacing: 1px; }
 
   .score-cell { font-weight: 600; }
 
   .total-row td, .total-row th { background: #f7f4ec; font-weight: 800; color: #5c5a55; }
 
   .total-cell { font-variant-numeric: tabular-nums; }
-  .final-row td, .final-row th { background: var(--accent-soft); font-weight: 800; color: #a06b00; }
+  .final-row td, .final-row th { background: var(--accent-soft); font-weight: 800; color: #a06b00; padding: 12px 4px; }
   .final-cell { font-variant-numeric: tabular-nums; }
+  .final-cell.winner { background: var(--accent); color: #4a3000; font-weight: 900; }
 
   /* Saisie inline */
   .cell-inner { display: flex; flex-direction: column; align-items: center; }
   .cell-input {
     width: 46px; text-align: center; font-size: 14px; font-weight: 600;
     border: 1px solid var(--line); border-radius: 7px; padding: 0;
-    background: #fff; color: var(--ink); line-height: 1.4;
+    background: #fff; color: var(--ink); height: 42px; line-height: 42px;
   }
   .cell-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
   .cell-input::-webkit-outer-spin-button, .cell-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .cell-input[type=number] { -moz-appearance: textfield; }
-  .pair-inputs { display: flex; gap: 3px; }
-  .pair-inputs .cell-input { width: 22px; }
   .cell-value {
-    -webkit-appearance: none; appearance: none;
+    -webkit-appearance: none; -moz-appearance: none; appearance: none;
     border: none; background: transparent; cursor: pointer;
     font-family: inherit; font-size: 14px; font-weight: 700; color: var(--primary-dark);
-    width: 100%; padding: 0; margin: 0; line-height: 1; height: auto; min-height: 0; border-radius: 8px;
+    width: 100%; padding: 0; margin: 0; height: 42px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
   }
   .cell-value:hover { background: var(--accent-soft); }
   .cell-value.empty { color: #c6c2b6; }
-  .suite-btn {
+  .bonus { font-size: 10px; font-weight: 700; color: #a06b00; }
+  .suite-value {
     -webkit-appearance: none; appearance: none;
-    border: 1px solid var(--line); background: #fff; color: var(--ink-soft);
-    font-weight: 800; font-size: 14px; border-radius: 8px; padding: 16px 12px; margin: 0; line-height: 1; cursor: pointer;
+    border: none; background: transparent; color: var(--ink-soft);
+    font-family: inherit; font-weight: 800; font-size: 14px; border-radius: 8px; padding: 16px 12px; margin: 0; line-height: 1; cursor: pointer; width: 100%;
   }
-  .suite-btn:hover { background: var(--accent-soft); }
-  .suite-btn.filled { background: #eef1fc; color: var(--primary-dark); border-color: var(--primary); }
+  .suite-value:hover { background: var(--accent-soft); }
+  .suite-value.filled { background: #eef1fc; color: var(--primary-dark); }
+  .suite-value.raye { color: var(--ink-soft); }
 
   /* Historique */
   .page-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
   .page-head h2 { margin: 0; font-size: 22px; color: var(--primary-dark); }
-  .empty { text-align: center; color: var(--ink-soft); padding: 40px 0; }
+  p.empty { text-align: center; color: var(--ink-soft); padding: 40px 0; }
 
   .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
   .history-list li {
@@ -250,16 +270,21 @@
 <script>
 const STORAGE_CURRENT = 'yams.current';
 const STORAGE_HISTORY = 'yams.history';
+const RAYE = 'raye';
 
-const FACE = { as:1, deux:2, trois:3, quatre:4, cinq:5, six:6 };
-const MULT = { brelan:3, carre:4, yam:5 };
 const SUITE_POINTS = { grandeSuite:20, petiteSuite:15 };
+const BONUS = { brelan: 10, full: 20, carre: 30, grandeSuite: 40, petiteSuite: 30, yam: 50 };
+
+const MANCHE_COLORS = [
+  '#27ae60', '#e67e22', '#6c3483', '#7d6608', '#1e8449',
+  '#ca6f1e', '#6c3483', '#8d6e63', '#b7950b', '#9b59b6'
+];
 
 const INPUT_SPEC = {
-  as: { kind:'count' }, deux: { kind:'count' }, trois: { kind:'count' },
-  quatre: { kind:'count' }, cinq: { kind:'count' }, six: { kind:'count' },
-  brelan: { kind:'value' }, carre: { kind:'value' }, yam: { kind:'value' },
-  full: { kind:'pair' }, doublePaire: { kind:'pair' },
+  as: { kind:'total' }, deux: { kind:'total' }, trois: { kind:'total' },
+  quatre: { kind:'total' }, cinq: { kind:'total' }, six: { kind:'total' },
+  brelan: { kind:'total' }, carre: { kind:'total' }, yam: { kind:'total' },
+  full: { kind:'total' }, doublePaire: { kind:'total' },
   plus: { kind:'total' }, moins: { kind:'total' },
   grandeSuite: { kind:'suite', points:20 }, petiteSuite: { kind:'suite', points:15 },
 };
@@ -298,7 +323,7 @@ let state;
 
 /* ---------- État / stockage ---------- */
 function defaultState() {
-  return { manches: 3, nextId: 1, players: [{ id: 1, name: '' }], scores: {} };
+  return { manches: 3, nextId: 2, players: [{ id: 1, name: '' }], scores: {} };
 }
 
 function loadCurrent() {
@@ -306,7 +331,11 @@ function loadCurrent() {
     const raw = localStorage.getItem(STORAGE_CURRENT);
     if (raw) {
       const s = JSON.parse(raw);
-      if (s && Array.isArray(s.players)) { state = s; return; }
+      if (s && Array.isArray(s.players)) {
+        const maxId = s.players.reduce((mx, p) => Math.max(mx, Number(p.id) || 0), 0);
+        if (!Number.isFinite(s.nextId) || s.nextId <= maxId) s.nextId = maxId + 1;
+        state = s; return;
+      }
     }
   } catch (e) {}
   state = defaultState();
@@ -345,9 +374,12 @@ function sectionTotal(st, pid, manche, section) {
   }
   let t = 0;
   for (const c of SECTIONS[section]) {
-    const v = computeScore(c, getScore(st, pid, manche, c));
+    const raw = getScore(st, pid, manche, c);
+    const v = computeScore(c, raw);
     if (v != null) t += v;
+    t += bonusFor(c, raw);
   }
+  if (section === 1 && t >= 40) t += 10;
   return t;
 }
 
@@ -364,24 +396,21 @@ function playerGrandTotal(st, pid) {
 
 function computeScore(id, raw) {
   if (raw == null) return null;
-  if (FACE[id] != null) return raw * FACE[id];
-  if (MULT[id] != null) return raw * MULT[id];
-  if (id === 'full') return 3 * raw[0] + 2 * raw[1];
-  if (id === 'doublePaire') return 2 * raw[0] + 2 * raw[1];
-  if (id === 'plus' || id === 'moins') return raw;
+  if (raw === RAYE) return 0;
   if (SUITE_POINTS[id] != null) return SUITE_POINTS[id];
-  return null;
+  return raw;
 }
 
-function sanitizeRaw(spec, raw) {
+function bonusFor(id, raw) {
+  const b = BONUS[id];
+  if (!b) return 0;
+  const score = computeScore(id, raw);
+  return (score == null || score === 0) ? 0 : b;
+}
+
+function sanitizeRaw(raw) {
   if (raw == null) return null;
-  const int = v => Math.round(v);
-  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-  if (spec.kind === 'pair') return [clamp(int(raw[0]), 1, 6), clamp(int(raw[1]), 1, 6)];
-  const v = int(raw);
-  if (spec.kind === 'count') return clamp(v, 0, 5);
-  if (spec.kind === 'value') return clamp(v, 1, 6);
-  return clamp(v, 0, Infinity);
+  return Math.max(0, Math.round(raw));
 }
 
 /* ---------- Utilitaires ---------- */
@@ -414,9 +443,12 @@ function tableHTML(st, readOnly) {
   const manches = st.manches;
   const totalCols = players.length * manches + 1;
   let html = `<div class="table-wrap"><table class="score-table" style="min-width:${160 + totalCols * 54}px">`;
+  html += '<colgroup><col style="width:160px">';
+  for (let i = 0; i < totalCols - 1; i++) html += '<col>';
+  html += '</colgroup>';
   html += '<thead><tr><th class="corner"></th>';
   for (let m = 0; m < manches; m++) {
-    html += `<th class="manche-top" colspan="${players.length}">Manche ${m + 1}</th>`;
+    html += `<th class="manche-top" colspan="${players.length}" style="color:${MANCHE_COLORS[m % MANCHE_COLORS.length]}">Manche ${m + 1}</th>`;
   }
   html += '</tr><tr><th class="corner"></th>';
   for (let m = 0; m < manches; m++) {
@@ -424,7 +456,7 @@ function tableHTML(st, readOnly) {
       if (readOnly) {
         html += `<th class="player-head">${esc(p.name || '—')}</th>`;
       } else {
-        const rm = m === 0 ? `<button class="rm-btn" data-remove="${p.id}" title="Supprimer ce joueur">×</button>` : '';
+        const rm = m === 0 ? `<button class="rm-btn" data-remove="${p.id}" title="Supprimer ce joueur">×</button>` : '<span class="rm-btn-spacer"></span>';
         html += `<th class="player-head"><div class="player-head-inner">`
           + `<input class="name-input" data-name="${p.id}" value="${esc(p.name)}" placeholder="Prénom" autocomplete="off">${rm}`
           + `</div></th>`;
@@ -435,18 +467,18 @@ function tableHTML(st, readOnly) {
 
   for (const row of ROWS) {
     if (row.type === 'combo') {
-      html += `<tr><th class="row-label combo">${row.label}</th>`;
+      const bonusNote = BONUS[row.id] ? ` <span class="label-bonus">+${BONUS[row.id]}</span>` : '';
+      html += `<tr><th class="row-label combo">${row.label}${bonusNote}</th>`;
       for (let m = 0; m < manches; m++) {
         for (const p of players) {
           const raw = getScore(st, p.id, m, row.id);
           const score = computeScore(row.id, raw);
           const spec = INPUT_SPEC[row.id];
           if (readOnly) {
-            html += `<td class="score-cell${raw == null ? ' empty' : ''}">${raw == null ? '' : score}</td>`;
+            const display = raw === RAYE ? '✗' : (raw == null ? '' : score);
+            html += `<td class="score-cell${raw == null ? ' empty' : ''}${raw === RAYE ? ' raye' : ''}">${display}</td>`;
           } else if (spec.kind === 'suite') {
-            html += `<td class="score-cell"><div class="cell-inner">`
-              + `<button type="button" class="suite-btn${raw == null ? '' : ' filled'}" data-suite="${row.id}" data-player="${p.id}" data-manche="${m}">${spec.points}</button>`
-              + `</div></td>`;
+            html += `<td class="score-cell"><div class="cell-inner">${suiteValueHTML(row.id, p.id, m, raw)}</div></td>`;
           } else {
             html += `<td class="score-cell num-cell"><div class="cell-inner">${cellValueHTML(row.id, p.id, m, raw)}</div></td>`;
           }
@@ -454,7 +486,8 @@ function tableHTML(st, readOnly) {
       }
       html += '</tr>';
     } else if (row.type === 'total') {
-      html += `<tr class="total-row"><th class="row-label">${row.label}</th>`;
+      const note = row.section === 1 ? ' <span class="label-bonus">(+10 si ≥ 40)</span>' : '';
+      html += `<tr class="total-row"><th class="row-label">TOTAL ${row.section}${note}</th>`;
       for (let m = 0; m < manches; m++) {
         for (const p of players) {
           html += `<td class="total-cell" data-tp="${p.id}" data-tm="${m}" data-ts="${row.section}">${sectionTotal(st, p.id, m, row.section)}</td>`;
@@ -465,9 +498,12 @@ function tableHTML(st, readOnly) {
   }
   html += '<tr class="final-row"><th class="row-label">TOTAL FINAL</th>';
   for (let m = 0; m < manches; m++) {
-    for (const p of players) {
-      html += `<td class="final-cell" data-final-player="${p.id}" data-final-manche="${m}">${mancheTotal(st, p.id, m)}</td>`;
-    }
+    const totals = players.map(p => mancheTotal(st, p.id, m));
+    const max = Math.max(...totals);
+    players.forEach((p, i) => {
+      const winner = max > 0 && totals[i] === max;
+      html += `<td class="final-cell${winner ? ' winner' : ''}" data-final-player="${p.id}" data-final-manche="${m}">${totals[i]}</td>`;
+    });
   }
   html += '</tr>';
   html += '</tbody></table></div>';
@@ -493,7 +529,7 @@ function renderMain() {
       <button id="add-player" class="btn primary">+ Ajouter un joueur</button>
       <button id="save-game" class="btn">Sauvegarder la partie</button>
       <button id="open-history" class="btn">Parties sauvegardées</button>
-      <button id="new-game" class="btn danger">Nouvelle partie</button>
+      <button id="new-game" class="btn violet">Nouvelle partie</button>
     </div>
     ${tableHTML(state, false)}
   `;
@@ -530,24 +566,24 @@ function renderHistoryDetail(id) {
 }
 
 /* ---------- Saisie inline ---------- */
-function cellInputsHTML(spec, comboId, pid, manche, raw) {
-  if (spec.kind === 'pair') {
-    const a = raw ? raw[0] : '';
-    const b = raw ? raw[1] : '';
-    return `<span class="pair-inputs">`
-      + `<input type="number" class="cell-input pair-a" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" data-index="0" value="${a}" min="1" max="6">`
-      + `<input type="number" class="cell-input pair-b" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" data-index="1" value="${b}" min="1" max="6">`
-      + `</span>`;
-  }
-  const ph = spec.kind === 'count' ? 'nb' : (spec.kind === 'value' ? 'val' : 'total');
-  const mn = spec.kind === 'count' ? 0 : (spec.kind === 'value' ? 1 : 0);
-  const mx = spec.kind === 'count' ? 5 : (spec.kind === 'value' ? 6 : 99);
-  return `<input type="number" class="cell-input" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" value="${raw == null ? '' : raw}" min="${mn}" max="${mx}" placeholder="${ph}">`;
+function cellInputsHTML(comboId, pid, manche, raw) {
+  return `<input type="number" class="cell-input" data-combo="${comboId}" data-player="${pid}" data-manche="${manche}" value="${raw == null ? '' : raw}" min="0" placeholder="pts">`;
 }
 
 function cellValueHTML(comboId, pid, manche, raw) {
+  if (raw === RAYE) {
+    return `<button type="button" class="cell-value raye" data-unraye-combo="${comboId}" data-player="${pid}" data-manche="${manche}">✗</button>`;
+  }
   const score = computeScore(comboId, raw);
   return `<button type="button" class="cell-value${raw == null ? ' empty' : ''}" data-edit-combo="${comboId}" data-player="${pid}" data-manche="${manche}">${raw == null ? '·' : score}</button>`;
+}
+
+function suiteValueHTML(comboId, pid, manche, raw) {
+  if (raw === RAYE) {
+    return `<button type="button" class="suite-value raye" data-unraye-combo="${comboId}" data-player="${pid}" data-manche="${manche}">✗</button>`;
+  }
+  const points = SUITE_POINTS[comboId];
+  return `<button type="button" class="suite-value${raw == null ? ' empty' : ' filled'}" data-edit-combo="${comboId}" data-player="${pid}" data-manche="${manche}">${points}</button>`;
 }
 
 function commitCell(cell) {
@@ -556,16 +592,8 @@ function commitCell(cell) {
   const comboId = input.dataset.combo;
   const pid = +input.dataset.player;
   const manche = +input.dataset.manche;
-  const spec = INPUT_SPEC[comboId];
-  let raw;
-  if (spec.kind === 'pair') {
-    const a = cell.querySelector('.pair-a').value;
-    const b = cell.querySelector('.pair-b').value;
-    raw = (a === '' && b === '') ? null : [a === '' ? 0 : +a, b === '' ? 0 : +b];
-  } else {
-    raw = input.value === '' ? null : +input.value;
-  }
-  raw = sanitizeRaw(spec, raw);
+  if (getScore(state, pid, manche, comboId) === RAYE) return;
+  const raw = sanitizeRaw(input.value === '' ? null : +input.value);
   setScore(pid, manche, comboId, raw);
   saveCurrent();
   cell.querySelector('.cell-inner').innerHTML = cellValueHTML(comboId, pid, manche, raw);
@@ -576,8 +604,18 @@ function refreshTotals(pid, manche) {
   document.querySelectorAll(`[data-tp="${pid}"][data-tm="${manche}"]`).forEach(td => {
     td.textContent = sectionTotal(state, pid, manche, +td.dataset.ts);
   });
-  document.querySelectorAll(`[data-final-player="${pid}"][data-final-manche="${manche}"]`).forEach(td => {
-    td.textContent = mancheTotal(state, pid, manche);
+  refreshFinalRow(manche);
+}
+
+function refreshFinalRow(manche) {
+  const players = state.players;
+  const totals = players.map(p => mancheTotal(state, p.id, manche));
+  const max = Math.max(...totals);
+  players.forEach((p, i) => {
+    const td = document.querySelector(`[data-final-player="${p.id}"][data-final-manche="${manche}"]`);
+    if (!td) return;
+    td.textContent = totals[i];
+    td.classList.toggle('winner', max > 0 && totals[i] === max);
   });
 }
 
@@ -588,8 +626,16 @@ function openCellEditor(btn) {
   const spec = INPUT_SPEC[comboId];
   const raw = getScore(state, pid, manche, comboId);
   const inner = btn.closest('.cell-inner');
-  inner.innerHTML = cellInputsHTML(spec, comboId, pid, manche, raw);
-  const first = inner.querySelector('.cell-input');
+  const rayerBtn = `<button type="button" class="rayer-case-btn" data-rayer-case="${comboId}" data-player="${pid}" data-manche="${manche}">Rayer</button>`;
+  if (spec.kind === 'suite') {
+    const action = raw != null && raw !== RAYE
+      ? `<button type="button" class="suite-action" data-suite-clear="${comboId}" data-player="${pid}" data-manche="${manche}">Vider</button>`
+      : `<button type="button" class="suite-action" data-suite-valider="${comboId}" data-player="${pid}" data-manche="${manche}">Valider (${spec.points} pts)</button>`;
+    inner.innerHTML = action + rayerBtn;
+  } else {
+    inner.innerHTML = cellInputsHTML(comboId, pid, manche, raw) + rayerBtn;
+  }
+  const first = inner.querySelector('.cell-input, .suite-action');
   if (first) first.focus();
 }
 
@@ -670,16 +716,27 @@ document.addEventListener('click', e => {
   if (t.closest('#back-history')) { renderHistory(); return; }
   const rm = t.closest('[data-remove]');
   if (rm) { removePlayer(+rm.dataset.remove); return; }
+  const unraye = t.closest('[data-unraye-combo]');
+  if (unraye) {
+    setScore(+unraye.dataset.player, +unraye.dataset.manche, unraye.dataset.unrayeCombo, null);
+    saveCurrent();
+    renderMain();
+    return;
+  }
   const del = t.closest('[data-del-history]');
   if (del) { deleteHistory(+del.dataset.delHistory); return; }
   const view = t.closest('[data-view-history]');
   if (view) { renderHistoryDetail(+view.dataset.viewHistory); return; }
-  const suite = t.closest('[data-suite]');
-  if (suite) {
-    const comboId = suite.dataset.suite;
-    const pid = +suite.dataset.player;
-    const manche = +suite.dataset.manche;
-    setScore(pid, manche, comboId, getScore(state, pid, manche, comboId) == null ? SUITE_POINTS[comboId] : null);
+  const sv = t.closest('[data-suite-valider]');
+  if (sv) {
+    setScore(+sv.dataset.player, +sv.dataset.manche, sv.dataset.suiteValider, SUITE_POINTS[sv.dataset.suiteValider]);
+    saveCurrent();
+    renderMain();
+    return;
+  }
+  const sc = t.closest('[data-suite-clear]');
+  if (sc) {
+    setScore(+sc.dataset.player, +sc.dataset.manche, sc.dataset.suiteClear, null);
     saveCurrent();
     renderMain();
     return;
@@ -700,6 +757,16 @@ document.addEventListener('input', e => {
   }
   if (t.matches('[data-manches]')) {
     setManches(+t.value);
+  }
+});
+
+document.addEventListener('mousedown', e => {
+  const rayer = e.target.closest('[data-rayer-case]');
+  if (rayer) {
+    e.preventDefault();
+    setScore(+rayer.dataset.player, +rayer.dataset.manche, rayer.dataset.rayerCase, RAYE);
+    saveCurrent();
+    renderMain();
   }
 });
 
