@@ -226,12 +226,13 @@
   .cell-value.empty { color: #c6c2b6; }
   .bonus { font-size: 10px; font-weight: 700; color: #a06b00; }
   .suite-value {
-    -webkit-appearance: none; appearance: none;
+    -webkit-appearance: none; -moz-appearance: none; appearance: none;
     border: none; background: transparent; color: var(--ink-soft);
-    font-family: inherit; font-weight: 800; font-size: 14px; border-radius: 8px; padding: 16px 12px; margin: 0; line-height: 1; cursor: pointer; width: 100%;
+    font-family: inherit; font-weight: 800; font-size: 14px; border-radius: 8px; padding: 0; margin: 0; height: 42px; cursor: pointer; width: 100%;
+    display: flex; align-items: center; justify-content: center;
   }
   .suite-value:hover { background: var(--accent-soft); }
-  .suite-value.filled { background: #eef1fc; color: var(--primary-dark); }
+  .suite-value.filled { color: var(--primary-dark); }
   .suite-value.raye { color: var(--ink-soft); }
 
   /* Historique */
@@ -273,7 +274,7 @@ const STORAGE_HISTORY = 'yams.history';
 const RAYE = 'raye';
 
 const SUITE_POINTS = { grandeSuite:20, petiteSuite:15 };
-const BONUS = { brelan: 10, full: 20, carre: 30, grandeSuite: 40, petiteSuite: 30, yam: 50 };
+const BONUS = { brelan: 10, full: 20, carre: 30, grandeSuite: 40, petiteSuite: 40, yam: 50 };
 
 const MANCHE_COLORS = [
   '#27ae60', '#e67e22', '#6c3483', '#7d6608', '#1e8449',
@@ -368,9 +369,10 @@ function setScore(pid, manche, comboId, value) {
 
 function sectionTotal(st, pid, manche, section) {
   if (section === 3) {
-    const plus = computeScore('plus', getScore(st, pid, manche, 'plus'));
-    const moins = computeScore('moins', getScore(st, pid, manche, 'moins'));
-    return (plus == null ? 0 : plus) - (moins == null ? 0 : moins);
+    const plus = getScore(st, pid, manche, 'plus');
+    const moins = getScore(st, pid, manche, 'moins');
+    if (plus == null || plus === RAYE || moins == null || moins === RAYE) return 0;
+    return plus - moins;
   }
   let t = 0;
   for (const c of SECTIONS[section]) {
@@ -583,7 +585,7 @@ function suiteValueHTML(comboId, pid, manche, raw) {
     return `<button type="button" class="suite-value raye" data-unraye-combo="${comboId}" data-player="${pid}" data-manche="${manche}">✗</button>`;
   }
   const points = SUITE_POINTS[comboId];
-  return `<button type="button" class="suite-value${raw == null ? ' empty' : ' filled'}" data-edit-combo="${comboId}" data-player="${pid}" data-manche="${manche}">${points}</button>`;
+  return `<button type="button" class="suite-value${raw == null ? ' empty' : ' filled'}" data-edit-combo="${comboId}" data-player="${pid}" data-manche="${manche}">${raw == null ? '·' : points}</button>`;
 }
 
 function commitCell(cell) {

@@ -108,9 +108,21 @@ const st = {
 assert.strictEqual(sectionTotal(st, 1, 0, 1), 50, 'section 1 = 40 + 10 (bonus ≥ 40)');
 assert.strictEqual(sectionTotal(st, 1, 0, 2), 119, 'section 2 = 59 + 60 (bonus)');
 assert.strictEqual(sectionTotal(st, 1, 0, 3), 15, 'section 3 = plus - moins = 15');
-assert.strictEqual(sectionTotal(st, 1, 0, 4), 185, 'section 4 = 65 + 120 (bonus)');
-assert.strictEqual(mancheTotal(st, 1, 0), 50 + 119 + 15 + 185, 'total manche');
-assert.strictEqual(playerGrandTotal(st, 1), 50 + 119 + 15 + 185, 'total final');
+assert.strictEqual(sectionTotal(st, 1, 0, 4), 195, 'section 4 = 65 + 130 (bonus)');
+assert.strictEqual(mancheTotal(st, 1, 0), 50 + 119 + 15 + 195, 'total manche');
+assert.strictEqual(playerGrandTotal(st, 1), 50 + 119 + 15 + 195, 'total final');
+
+// TOTAL 3 : 0 si une des deux cases (plus/moins) n'est pas remplie
+const stPlusOnly = { manches: 1, players: [{ id: 1, name: 'Alice' }], scores: { 1: { 0: { plus: 22 } } } };
+const stMoinsOnly = { manches: 1, players: [{ id: 1, name: 'Alice' }], scores: { 1: { 0: { moins: 7 } } } };
+assert.strictEqual(sectionTotal(stPlusOnly, 1, 0, 3), 0, 'total 3 = 0 si moins manquant');
+assert.strictEqual(sectionTotal(stMoinsOnly, 1, 0, 3), 0, 'total 3 = 0 si plus manquant');
+
+// TOTAL 3 : 0 si une des deux cases est rayée
+const stPlusRaye = { manches: 1, players: [{ id: 1, name: 'Alice' }], scores: { 1: { 0: { plus: 'raye', moins: 7 } } } };
+const stMoinsRaye = { manches: 1, players: [{ id: 1, name: 'Alice' }], scores: { 1: { 0: { plus: 22, moins: 'raye' } } } };
+assert.strictEqual(sectionTotal(stPlusRaye, 1, 0, 3), 0, 'total 3 = 0 si plus rayé');
+assert.strictEqual(sectionTotal(stMoinsRaye, 1, 0, 3), 0, 'total 3 = 0 si moins rayé');
 
 // Validation des saisies (sanitizeRaw) : total ≥ 0, arrondi
 assert.strictEqual(sanitizeRaw(9), 9, 'total 9 conservé');
@@ -123,7 +135,7 @@ assert.strictEqual(bonusFor('brelan', 15), 10, 'brelan: bonus +10');
 assert.strictEqual(bonusFor('full', 16), 20, 'full: bonus +20');
 assert.strictEqual(bonusFor('carre', 12), 30, 'carre: bonus +30');
 assert.strictEqual(bonusFor('grandeSuite', 20), 40, 'grande suite: bonus +40');
-assert.strictEqual(bonusFor('petiteSuite', 15), 30, 'petite suite: bonus +30');
+assert.strictEqual(bonusFor('petiteSuite', 15), 40, 'petite suite: bonus +40');
 assert.strictEqual(bonusFor('yam', 30), 50, 'yam: bonus +50');
 assert.strictEqual(bonusFor('brelan', null), 0, 'brelan vide: pas de bonus');
 assert.strictEqual(bonusFor('brelan', 'raye'), 0, 'brelan rayé: pas de bonus');
