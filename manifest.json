@@ -1,0 +1,26 @@
+{
+  "name": "Yams — Compteur de points",
+  "short_name": "Yams",
+  "description": "Compteur de points pour le jeu de Yams (Yahtzee)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f1ea",
+  "theme_color": "#3a5bd9",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
