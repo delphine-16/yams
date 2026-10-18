@@ -50,5 +50,10 @@ Hébergée sur GitHub Pages : https://delphine-16.github.io/yams/
 - **Synchronisation des parties entre appareils** : ajouter une **base de données
   (Supabase)** + une **authentification** (email / mot de passe), en complément du
   `localStorage` actuel (qui reste le mode hors-ligne).
-- État : pas encore commencé. Il faudra : compte Supabase, table `parties`,
-  écran de connexion, sauvegarde/chargement via Supabase.
+- **État actuel** : compte Supabase + projet **créés**. Identifiants à récupérer
+  (Project URL + clé `anon`) avant d'implémenter.
+- **Reste à faire** :
+  1. Créer la table `parties` + règles RLS + activer l'auth email/mot de passe.
+  2. Écran de connexion/inscription + gestion de session dans l'app.
+  3. Sauvegarde/chargement des parties via Supabase (intégré à l'historique).
+  4. Tests (sync PC ↔ téléphone) + déploiement.
